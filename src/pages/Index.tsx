@@ -11,12 +11,53 @@ interface Recipe {
   time: string;
   difficulty: string;
   image: string;
+  servings?: number;
+  ingredients?: string[];
+  steps?: string[];
 }
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<"main" | "recipes" | "tips">("main");
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
-  const recipes: Recipe[] = [];
+  const recipes: Recipe[] = [
+    {
+      id: 1,
+      title: "Суп с болгарским перцем",
+      description: "Яркий и ароматный суп-пюре с запеченными болгарскими перцами, овощами и специями",
+      time: "1 час 30 мин",
+      difficulty: "Средне",
+      image: "https://cdn.poehali.dev/files/8d0554fe-4e13-4c9e-a0f5-e8a89854dd91.jpg",
+      servings: 5,
+      ingredients: [
+        "Перец сладкий красный – 1.7 шт.",
+        "Масло оливковое – 1.7 ст.л.",
+        "Карри – 0.4 ч.л.",
+        "Лавровый лист – 0.9 шт.",
+        "Лук репчатый – 0.9 шт.",
+        "Морковь – 1.7 шт. (крупные, около 300 гр)",
+        "Чеснок – 3.4 зуб.",
+        "Соль – 0.9 ч.л.",
+        "Сок лимонный – 1.7 ч.л.",
+        "Вода – 0.9 л (или овощной бульон)",
+        "Перец сладкий – 0.9 шт. (для подачи)",
+        "Зелень – 1.7 ст.л. (для подачи)",
+        "Масло оливковое – 0.9 ст.л. (для подачи)"
+      ],
+      steps: [
+        "Разогреть духовку до 175°C. Перцы помыть, выложить на противень и запечь в течение часа, иногда переворачивая. После запекания переложить в миску, накрыть пленкой и дать постоять 10 минут.",
+        "Нарезать лук и чеснок.",
+        "Морковь нарезать довольно крупно.",
+        "На разогретом оливковом масле обжарить порошок карри 10-20 секунд до появления аромата.",
+        "Добавить лук и чеснок, обжарить 5 минут.",
+        "Добавить морковь и лавровый лист. Накрыть крышкой и обжаривать 7-10 минут.",
+        "Добавить 1 литр воды и довести до кипения. Накрыть крышкой, уменьшить огонь и варить 25 минут на слабом огне.",
+        "Остывшие перцы очистить от кожуры и семян. Крупно нарезать.",
+        "Добавить перец в суп, вынуть лавровый лист и пюрировать блендером до гладкого состояния. Добавить лимонный сок и соль по вкусу.",
+        "При подаче украсить кусочками свежего перца, посыпать зеленью и сбрызнуть оливковым маслом."
+      ]
+    }
+  ];
 
   const tips = [
     {
@@ -160,7 +201,7 @@ const Index = () => {
                     <Icon name="Clock" size={16} />
                     <span>{recipe.time}</span>
                   </div>
-                  <Button className="w-full mt-4">
+                  <Button className="w-full mt-4" onClick={() => setSelectedRecipe(recipe)}>
                     Посмотреть рецепт
                   </Button>
                 </CardContent>
@@ -195,6 +236,73 @@ const Index = () => {
             </div>
           </div>
         </section>
+      )}
+
+      {selectedRecipe && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedRecipe(null)}>
+          <div className="bg-card rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-card border-b border-border p-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold">{selectedRecipe.title}</h2>
+              <Button variant="ghost" size="icon" onClick={() => setSelectedRecipe(null)}>
+                <Icon name="X" size={24} />
+              </Button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              <img 
+                src={selectedRecipe.image} 
+                alt={selectedRecipe.title}
+                className="w-full h-64 object-cover rounded-lg"
+              />
+              
+              <div className="flex gap-4 flex-wrap">
+                <Badge className="text-base px-4 py-2">{selectedRecipe.difficulty}</Badge>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Icon name="Clock" size={20} />
+                  <span>{selectedRecipe.time}</span>
+                </div>
+                {selectedRecipe.servings && (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Icon name="Users" size={20} />
+                    <span>{selectedRecipe.servings} порций</span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-lg text-muted-foreground">{selectedRecipe.description}</p>
+
+              {selectedRecipe.ingredients && (
+                <div>
+                  <h3 className="text-2xl font-bold mb-4">Ингредиенты</h3>
+                  <ul className="space-y-2">
+                    {selectedRecipe.ingredients.map((ingredient, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <Icon name="Check" size={20} className="text-primary mt-1 flex-shrink-0" />
+                        <span>{ingredient}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {selectedRecipe.steps && (
+                <div>
+                  <h3 className="text-2xl font-bold mb-4">Приготовление</h3>
+                  <ol className="space-y-4">
+                    {selectedRecipe.steps.map((step, idx) => (
+                      <li key={idx} className="flex gap-4">
+                        <span className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                          {idx + 1}
+                        </span>
+                        <p className="pt-1">{step}</p>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       <footer className="bg-card border-t border-border mt-20">
