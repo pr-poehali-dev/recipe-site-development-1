@@ -16,32 +16,7 @@ interface Recipe {
 const Index = () => {
   const [activeTab, setActiveTab] = useState<"main" | "recipes" | "tips">("main");
 
-  const recipes: Recipe[] = [
-    {
-      id: 1,
-      title: "Паста с овощами",
-      description: "Классическое итальянское блюдо с сезонными овощами и ароматными травами",
-      time: "30 мин",
-      difficulty: "Легко",
-      image: "/img/8255e02f-bdd2-427a-ae1c-0d95e242d11d.jpg"
-    },
-    {
-      id: 2,
-      title: "Шоколадное печенье",
-      description: "Домашнее хрустящее печенье с кусочками темного шоколада",
-      time: "45 мин",
-      difficulty: "Средне",
-      image: "/img/de54ac04-d0cf-48b9-9762-b7df203a33af.jpg"
-    },
-    {
-      id: 3,
-      title: "Завтрак-боул",
-      description: "Полезный и питательный завтрак с фруктами, йогуртом и гранолой",
-      time: "15 мин",
-      difficulty: "Легко",
-      image: "/img/e5307bda-c813-41fd-85f8-7e914e1aa1f2.jpg"
-    }
-  ];
+  const recipes: Recipe[] = [];
 
   const tips = [
     {
