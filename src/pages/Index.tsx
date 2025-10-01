@@ -16,16 +16,7 @@ interface Recipe {
 const Index = () => {
   const [activeTab, setActiveTab] = useState<"main" | "recipes" | "tips">("main");
 
-  const recipes: Recipe[] = [
-    {
-      id: 1,
-      title: "Суп с болгарским перцем",
-      description: "Яркий и ароматный суп с сочными болгарскими перцами, овощами и свежей зеленью",
-      time: "40 мин",
-      difficulty: "Средне",
-      image: "/img/dcb85c2e-31df-42df-ade1-b44f4a3f0478.jpg"
-    }
-  ];
+  const recipes: Recipe[] = [];
 
   const tips = [
     {
