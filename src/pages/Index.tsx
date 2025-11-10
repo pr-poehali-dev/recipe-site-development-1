@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
+import { useToast } from "@/hooks/use-toast";
 
 interface Recipe {
   id: number;
@@ -19,6 +20,35 @@ interface Recipe {
 const Index = () => {
   const [activeTab, setActiveTab] = useState<"main" | "recipes" | "tips">("main");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      toast({
+        title: "Подключение восстановлено",
+        description: "Вы снова онлайн",
+      });
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      toast({
+        title: "Офлайн режим",
+        description: "Рецепты доступны без интернета",
+        variant: "destructive",
+      });
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [toast]);
 
   const recipes: Recipe[] = [
     {
@@ -212,9 +242,17 @@ const Index = () => {
       <nav className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-card/90">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl md:text-3xl font-bold text-primary">
-              Книга Рецептов
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-primary">
+                Книга Рецептов
+              </h1>
+              {!isOnline && (
+                <Badge variant="secondary" className="hidden md:flex">
+                  <Icon name="WifiOff" size={14} className="mr-1" />
+                  Офлайн
+                </Badge>
+              )}
+            </div>
             <div className="flex gap-2 md:gap-4">
               <Button
                 variant={activeTab === "main" ? "default" : "ghost"}
